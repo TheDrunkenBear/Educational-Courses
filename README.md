@@ -1,1 +1,3 @@
-# LeetCode
+# Educational courses
+
+## LeetCode
