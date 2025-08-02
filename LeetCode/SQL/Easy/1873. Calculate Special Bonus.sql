@@ -21,5 +21,5 @@ SELECT emp.employee_id,
          WHEN (emp.name LIKE 'M%') OR (emp.employee_id % 2 = 0) THEN 0
          ELSE emp.salary
        END bonus
-FROM Employees emp
+FROM Employees AS emp
 ORDER BY emp.employee_id;
