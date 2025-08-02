@@ -20,6 +20,6 @@ SELECT emp.employee_id,
        CASE
          WHEN (emp.name LIKE 'M%') OR (emp.employee_id % 2 = 0) THEN 0
          ELSE emp.salary
-       END bonus
-FROM Employees AS emp
+       END AS bonus
+FROM Employees emp
 ORDER BY emp.employee_id;
