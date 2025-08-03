@@ -1,0 +1,30 @@
+-- Table: Products
+
+-- +-------------+---------+
+-- | Column Name | Type    |
+-- +-------------+---------+
+-- | product_id  | int     |
+-- | store1      | int     |
+-- | store2      | int     |
+-- | store3      | int     |
+-- +-------------+---------+
+-- product_id is the primary key (column with unique values) for this table.
+-- Each row in this table indicates the product's price in 3 different stores: store1, store2, and store3.
+-- If the product is not available in a store, the price will be null in that store's column.
+ 
+
+-- Write a solution to rearrange the Products table so that each row has (product_id, store, price). If a product is not available in a store, do not include a row with that product_id and store combination in the result table.
+
+-- Return the result table in any order.
+
+-- Write your PostgreSQL query statement below
+SELECT product_id, store, price
+FROM Products,
+LATERAL (
+    VALUES
+        ('store1', store1),
+        ('store2', store2),
+        ('store3', store3)
+) AS t(store, price)
+WHERE price IS NOT NULL
+ORDER BY product_id, price;
