@@ -20,10 +20,8 @@ class MyLineReg:
 
     def __str__(self):
         """Строковое представление объекта класса MyLineReg"""
-        return (
-            f"MyLineReg class: n_iter={self.n_iter}, learning_rate={self.learning_rate}"
-        )
-
+        return f"MyLineReg class: n_iter={self.n_iter}, learning_rate={self.learning_rate}"
+    
     def _predict(self, X: pd.DataFrame) -> np.ndarray:
         """Внутренний метод для предсказания значений целевой переменной
 
@@ -34,10 +32,8 @@ class MyLineReg:
             np.ndarray: Вектор предсказанных значений целевой переменной
         """
         return np.dot(X, self.weights)
-
-    def fit(
-        self, X: pd.DataFrame, y: pd.Series, verbose: Union[int, bool] = False
-    ) -> None:
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series, verbose: Union[int, bool] = False) -> None:
         """Обучение линейной модели методом градиентного спуска
 
         Args:
@@ -46,7 +42,7 @@ class MyLineReg:
             verbose (Union[int, bool], optional): Параметр для вывода промежуточных результатов. Defaults to False.
         """
         # Добавление столбца для свободного члена
-        X.insert(0, "bias", 1)
+        X.insert(0, 'bias', 1)
         observation_count, feature_count = X.shape
 
         # Инициализация весов нулями
@@ -78,18 +74,3 @@ class MyLineReg:
         """
         return self.weights[1:]
 
-
-if __name__ == "__main__":
-    # Пример использования класса MyLineReg
-    from sklearn.datasets import make_regression
-
-    X, y = make_regression(
-        n_samples=1000, n_features=14, n_informative=10, noise=15, random_state=42
-    )
-    X = pd.DataFrame(X)
-    y = pd.Series(y)
-    X.columns = [f"col_{col}" for col in X.columns]
-
-    model = MyLineReg(n_iter=50, learning_rate=0.1)
-    model.fit(X, y, verbose=10)
-    print(np.mean(model.get_coef()))
