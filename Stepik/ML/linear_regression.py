@@ -7,7 +7,7 @@ class MyLineReg:
     n_iter: Optional[int] = 100
     """Количество итераций градиентного спуска"""
 
-    learning_rate: Optional[float] = 0.1
+    learning_rate: Optional[Union[float, callable]] = 0.1
     """Шаг градиентного спуска"""
 
     weights: Optional[list] = None
@@ -71,7 +71,7 @@ class MyLineReg:
         # Инициализация весов нулями
         self.weights = np.ones(feature_count)
 
-        for iteration in range(self.n_iter + 1):
+        for iteration in range(self.n_iter):
             y_pred = self._predict(X)
             mse = (
                 np.mean((y_pred - y) ** 2)
@@ -96,7 +96,11 @@ class MyLineReg:
             )
 
             # Обновление весов
-            self.weights -= self.learning_rate * gradient
+            self.weights -= (
+                self.learning_rate(iteration + 1)
+                if callable(self.learning_rate)
+                else self.learning_rate
+            ) * gradient
 
             # Вычисление и сохранение лучшего значения метрики качества модели
             self._best_score = {
