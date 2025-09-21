@@ -19,11 +19,23 @@ class MyLineReg:
     _best_score: Optional[float] = None
     """Лучшее значение метрики качества модели"""
 
+    reg: Optional[Literal["l1", "l2", "elasticnet"]] = None
+    """Тип регуляризации"""
+
+    l1_coef: Optional[float] = 0.0
+    """Коэффициент L1 регуляризации"""
+
+    l2_coef: Optional[float] = 0.0
+    """Коэффициент L2 регуляризации"""
+
     def __init__(self, **kwargs) -> None:
         """Инициализация параметров класса MyLineReg"""
         self.n_iter = kwargs.get("n_iter", self.n_iter)
         self.learning_rate = kwargs.get("learning_rate", self.learning_rate)
         self.metric = kwargs.get("metric", self.metric)
+        self.reg = kwargs.get("reg", self.reg)
+        self.l1_coef = kwargs.get("l1_coef", self.l1_coef)
+        self.l2_coef = kwargs.get("l2_coef", self.l2_coef)
 
     def __str__(self):
         """Строковое представление объекта класса MyLineReg"""
@@ -61,10 +73,27 @@ class MyLineReg:
 
         for iteration in range(self.n_iter + 1):
             y_pred = self._predict(X)
-            mse = np.mean((y_pred - y) ** 2)
+            mse = (
+                np.mean((y_pred - y) ** 2)
+                + self.l1_coef
+                * np.sum(np.abs(self.weights))
+                * int(self.reg in ["l1", "elasticnet"])
+                + self.l2_coef
+                * np.sum(self.weights**2)
+                * int(self.reg in ["l2", "elasticnet"])
+            )
 
             # Вычисление градиента
-            gradient = 2 / observation_count * np.dot(X.T, (y_pred - y))
+            gradient = (
+                2 / observation_count * np.dot(X.T, (y_pred - y))
+                + self.l1_coef
+                * np.sign(self.weights)
+                * int(self.reg in ["l1", "elasticnet"])
+                + 2
+                * self.l2_coef
+                * self.weights
+                * int(self.reg in ["l2", "elasticnet"])
+            )
 
             # Обновление весов
             self.weights -= self.learning_rate * gradient
