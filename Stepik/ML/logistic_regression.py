@@ -84,3 +84,27 @@ class MyLogReg:
             Optional[list]: Весовые коэффициенты линейной модели
         """
         return self.weights[1:]
+
+    def predict_proba(self, X: pd.DataFrame) -> float:
+        """Предсказание значений целевой переменной
+
+        Args:
+            X (pd.DataFrame): Матрица объекты-признаки
+
+        Returns:
+            float: Вектор предсказанных значений целевой переменной
+        """
+        X.insert(0, "bias", 1)
+        return np.mean(self._predict(X))
+
+    def predict(self, X: pd.DataFrame) -> int:
+        """Предсказание вероятностей положительного класса
+
+        Args:
+            X (pd.DataFrame): Матрица объекты-признаки
+
+        Returns:
+            float: Вектор предсказанных вероятностей положительного класса
+        """
+        X.insert(0, "bias", 1)
+        return np.sum(self._predict(X) > 0.5)
