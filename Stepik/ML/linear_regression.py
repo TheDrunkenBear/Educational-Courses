@@ -68,7 +68,7 @@ class MyLineReg:
         X.insert(0, "bias", 1)
         observation_count, feature_count = X.shape
 
-        # Инициализация весов нулями
+        # Инициализация весов единицами
         self.weights = np.ones(feature_count)
 
         for iteration in range(self.n_iter):
